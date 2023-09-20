@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,9 +43,9 @@ public class CSVService {
     }
 
     private List<LinkDTO> csvToLinks(InputStream is) {
-        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
              CSVParser csvParser = new CSVParser(fileReader,
-                     CSVFormat.DEFAULT.withFirstRecordAsHeader().withDelimiter(';').withIgnoreHeaderCase().withTrim());) {
+                     CSVFormat.DEFAULT.withFirstRecordAsHeader().withDelimiter(';').withIgnoreHeaderCase().withTrim())) {
 
             List<LinkDTO> linkDTOList = new ArrayList<>();
             Iterable<CSVRecord> csvRecords = csvParser.getRecords();
@@ -58,10 +59,10 @@ public class CSVService {
                         .titulo(csvRecord.get("Nombre"))
                         .precio(new BigDecimal(csvRecord.get("Precio")))
                         .estado("activo")
-                        .redes(new ArrayList<LinkRedes>(Arrays.asList(
-                                LinkRedes.builder().nombre("Email").url("https://linkdemo.com/email/"+csvRecord.get("Id")).build(),
-                                LinkRedes.builder().nombre("Whatsapp").url("https://linkdemo.com/ws/"+csvRecord.get("Id")).build(),
-                                LinkRedes.builder().nombre("Facebook").url("https://linkdemo.com/facebook/"+csvRecord.get("Id")).build()
+                        .redes(new ArrayList<>(Arrays.asList(
+                                LinkRedes.builder().nombre("Email").url("https://linkdemo.com/email/" + csvRecord.get("Id")).build(),
+                                LinkRedes.builder().nombre("Whatsapp").url("https://linkdemo.com/ws/" + csvRecord.get("Id")).build(),
+                                LinkRedes.builder().nombre("Facebook").url("https://linkdemo.com/facebook/" + csvRecord.get("Id")).build()
                         )))
                         .visitas(0)
                         .ventas(0)
